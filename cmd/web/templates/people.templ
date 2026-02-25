@@ -1,0 +1,40 @@
+package web
+
+import "golang.org/x/text/cases"
+import "golang.org/x/text/language"
+
+templ button(text string, active bool) {
+	{{ caser := cases.Title(language.English) }}
+	{{ class := "bg-sky-800 hover:bg-white text-white hover:text-sky-800 font-bold py-2 px-4 rounded" }}
+	if !active {
+		{{ class = "bg-white hover:bg-sky-800 text-sky-800 hover:text-white font-bold py-2 px-4 rounded" }}
+	}
+	<button
+		hx-post="/people"
+		method="POST"
+		hx-target="#people-tab"
+		type="button"
+		value={ text }
+		name="tab"
+		class={ class }
+	>
+		{ caser.String(text) }
+	</button>
+}
+
+templ PeopleTabs(tabs []string, activeTab string) {
+	for _, name := range tabs {
+		@button(name, name == activeTab)
+	}
+}
+
+templ People(navbar templ.Component, tabs templ.Component) {
+	@Base() {
+		@navbar
+		<section class="flex self-center" id="people">
+			<div id="people-tab" class="grid grid-cols-4 gap-4">
+				@tabs
+			</div>
+		</section>
+	}
+}

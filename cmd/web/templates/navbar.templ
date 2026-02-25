@@ -1,0 +1,32 @@
+package web
+
+import "strings"
+import "golang.org/x/text/cases"
+import "golang.org/x/text/language"
+
+templ navItem(name string, active bool) {
+	{{ caser := cases.Title(language.English) }}
+	{{ title := caser.String(strings.ReplaceAll(name, "_", " ")) }}
+	if active {
+		<a class="text-blue-800" href={ "/" + name }>{ title }</a>
+	} else {
+		<a class="text-blue-500 hover:text-blue-800" href={ "/" + name }>{ title }</a>
+	}
+}
+
+templ Navbar(page string) {
+	<ul class="flex self-center">
+		<li class="mr-6">
+			@navItem("home", page == "home")
+		</li>
+		<li class="mr-6">
+			@navItem("people", page == "people")
+		</li>
+		<li class="mr-6">
+			@navItem("summer_program", page == "summer_program")
+		</li>
+		<li class="mr-6">
+			@navItem("media", page == "media")
+		</li>
+	</ul>
+}
