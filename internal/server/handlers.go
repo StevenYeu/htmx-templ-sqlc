@@ -4,15 +4,16 @@ import (
 	web "htmx-templ-sqlc/cmd/web/templates"
 	"log"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 var peopleTabs = []string{
-	"All",
-	"Interns",
-	"Project Managers",
-	"Admins",
+	"all",
+	"interns",
+	"project_managers",
+	"admins",
 }
-var activeTab = "All"
 
 func HelloWebHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
@@ -47,34 +48,20 @@ func MediaHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error rendering in MediaHandler: %e", err)
 	}
 }
-
-func PeopleHandler(w http.ResponseWriter, r *http.Request) {
+func PeopleHandler(c echo.Context) error {
+	activeTab := c.QueryParam("tab")
 	navbar := web.Navbar("people")
 	tabComp := web.PeopleTabs(peopleTabs, activeTab)
 	component := web.People(navbar, tabComp)
-	err := component.Render(r.Context(), w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		log.Fatalf("Error rendering in PeopleHandler: %e", err)
-	}
+	return component.Render(c.Request().Context(), c.Response())
 }
-func PeopleTabHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "Bad Request", http.StatusBadRequest)
-	}
-
-	tabName := r.FormValue("tab")
-	activeTab = tabName
+func PeopleTabHandler(c echo.Context) error {
+	activeTab := c.FormValue("tab")
 	tabComp := web.PeopleTabs(peopleTabs, activeTab)
-	err = tabComp.Render(r.Context(), w)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		log.Fatalf("Error rendering in PeopleHandler: %e", err)
-	}
+	return tabComp.Render(c.Request().Context(), c.Response())
 
 }
+
 func SummerProgramHandler(w http.ResponseWriter, r *http.Request) {
 	navbar := web.Navbar("summer_program")
 	component := web.SummerProgram(navbar)
