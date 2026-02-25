@@ -1,0 +1,22 @@
+package web
+
+templ Navbar(page string) {
+	<ul class="flex self-center">
+		<li class="mr-6">
+			if page == "home" {
+				<a class="text-blue-800" href="#">Home</a>
+			} else {
+				<a class="text-blue-500 hover:text-blue-800" href="#">Home</a>
+            }
+		</li>
+		<li class="mr-6">
+			<a class="text-blue-500 hover:text-blue-800" href="#">People</a>
+		</li>
+		<li class="mr-6">
+			<a class="text-blue-500 hover:text-blue-800" href="#">Summer Program</a>
+		</li>
+		<li class="mr-6">
+			<a class="text-blue-500" href="#">Media</a>
+		</li>
+	</ul>
+}
